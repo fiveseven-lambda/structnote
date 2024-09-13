@@ -1,0 +1,62 @@
+body {
+    background-color: lightgray;
+}
+
+div.flex {
+    display: flex;
+}
+
+div.parent, div.null {
+    flex: 10%;
+    margin: 10pt;
+}
+div.parent {
+    display: flex;
+    align-items: center;
+    font-size: small;
+    background-color: white;
+    mask-image: linear-gradient(white 80%, transparent);
+}
+
+div.siblings {
+    flex: 60%;
+}
+
+div.current {
+    margin: 10pt;
+    padding: 10pt;
+    background-color: white;
+}
+
+div.prev, div.next {
+    height: 40pt;
+    overflow: hidden;
+    padding: 0 10pt;
+    margin: 10pt;
+    background-color: white;
+    mask-image: linear-gradient(white 60%, transparent);
+}
+
+div.children {
+    flex: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+div.child, div.fetus {
+    margin: 5pt;
+    padding: 0 10pt;
+    height: 36pt;
+    overflow: hidden;
+    font-size: small;
+    mask-image: linear-gradient(white 60%, transparent);
+}
+
+div.child {
+    background-color: white;
+}
+
+div.fetus {
+    color: grey;
+}
