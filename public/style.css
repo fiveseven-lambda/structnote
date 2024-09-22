@@ -1,24 +1,42 @@
 main {
   background-color: lightgray;
   display: flex;
+  padding-bottom: 10pt;
+}
+body {
+  transition: opacity .2s;
+}
+body.fade {
+  opacity: 0;
 }
 
 div {
-  transition-property: height, width;
-  transition-duration: .3s;
+  transition: all .2s;
   overflow: hidden;
+}
+#grandparent {
+  width: 0vw;
+}
+#parent {
+  width: 12vw;
+}
+#siblings {
+  width: 75vw;
+}
+#children {
+  width: 12vw;
 }
 
-#current {
-  margin: 10pt 0;
+div.collapse {
+  height: 36pt;
 }
+div.item {
+  width: 75vw;
+}
+
 div.content {
-  background-color: white;
   display: flex;
   flex-direction: column;
-}
-div.child {
-  height: 36pt;
-  overflow: hidden;
-  margin: 10pt;
+  background-color: white;
+  margin: 10pt 10pt 0;
 }

@@ -1,147 +1,193 @@
 import $ from 'jquery'
-import text from './text.ts'
+import { Text, Item } from './text.ts'
 
-const params = new URLSearchParams(location.search)
+const currentParams = new URLSearchParams(location.search)
 
-let currentSlug: string | null = null
-let paramsButCurrent = new URLSearchParams
-let parentSlug: string | null = null
-let paramsButCurrentOrParent = new URLSearchParams
+let myIndex: number | undefined
+let parentSlug: string | undefined
+let otherParams = new URLSearchParams
 
-for(const [key, value] of params) {
-  if(key == 'page' && currentSlug == null){
-    currentSlug = value
-    continue
-  }
-  paramsButCurrent.append(key, value)
-  if(key == 'parent' && parentSlug == null){
+for(const [key, value] of currentParams) {
+  if(key == 'parent' && parentSlug == undefined){
     parentSlug = value
-    continue
+  }else if(key == 'index' && myIndex == undefined){
+    myIndex = Number(value)
+  }else{
+    otherParams.append(key, value)
   }
-  paramsButCurrentOrParent.append(key, value)
 }
 
-function fitHeight(element) {
-  const height = element.children().height()
+const transitionDuration = 200
+
+if(parentSlug == undefined){
+  parentSlug = ""
+}
+if(myIndex == undefined){
+  myIndex = 0
+}
+
+function fitHeight(element: JQuery) {
+  const height = element.children().outerHeight(true)
   if(height != undefined){
     element.height(height)
   }
 }
 
-const transitionDuration = 250
+function goToParent() {
+  $('#grandparent').width('12vw')
+  $('#parent').width('75vw')
+  $('#siblings').width('12vw')
+  $('#children').width('0vw')
+  $('body').addClass('fade')
+  setTimeout(() => location.search = otherParams.toString(), transitionDuration)
+}
 
-if(currentSlug){
-  const current = text[currentSlug]
-  if(current){
-    $('#current').append($('<div>').addClass('content').html(current.text))
-    if(current.children != undefined) {
-      for(const childSlug of current.children) {
-        const child = text[childSlug]
-        if(child){
-          $('#children').append(
+let goUp: () => void;
+let goDown: () => void;
+let goTop: () => void;
+let goBottom: () => void;
+let goToFirstChild: () => void;
+
+const parent = Text[parentSlug]
+if(parent){
+  $('#parent').append(
+    $('<div>')
+    .addClass('item')
+    .append(
+      $('<div>')
+      .addClass('content')
+      .html(parent.text)
+    )
+    .on('click', goToParent)
+  )
+  const siblings = parent.children
+  if(siblings){
+    for(const [index, siblingSlug] of siblings.entries()){
+      const sibling = Text[siblingSlug]
+      if(sibling){
+        const element = $('<div>')
+          .addClass('item')
+          .append(
             $('<div>')
-              .addClass('content child')
-              .append($('<div>').addClass('content').html(child.text))
-              .on('mouseenter', event => {
-                fitHeight($(event.currentTarget))
-              })
-              .on('click', event => {
-                const searchParams = new URLSearchParams()
-                searchParams.append('page', childSlug)
-                searchParams.append('parent', currentSlug)
-                for(const [key, value] of paramsButCurrent){
-                  searchParams.append(key, value)
-                }
-                $('#parent').css('width', '0%')
-                $('#siblings')
-                  .css('padding', '')
-                  .css('width', '15%')
-                $('#children')
-                  .css('padding', '10pt')
-                  .css('width', '70%')
-                $('#children').off('mouseleave')
+            .addClass('content')
+            .html(sibling.text)
+          )
+        if(index == myIndex){
+          element.attr('id', 'me')
+          const observer = new MutationObserver(
+            () => {
+              if($('#me').length){
+                fitHeight($('#me'))
+                observer.disconnect()
+              }
+            }
+          );
+          observer.observe(document, {childList: true, subtree: true})
+        }else{
+          const searchParams = new URLSearchParams()
+          if(parentSlug){
+            searchParams.append('parent', parentSlug)
+          }
+          searchParams.append('index', index.toString())
+          for(const [key, value] of otherParams){
+            searchParams.append(key, value)
+          }
+          function goToSibling() {
+            $('#me').height('36pt')
+            fitHeight(element)
+            $('body').addClass('fade')
+            setTimeout(() => location.search = searchParams.toString(), transitionDuration)
+          }
+          if(index == 0){
+            goTop = goToSibling
+          }
+          if(index == myIndex - 1){
+            goUp = goToSibling
+          }
+          if(index == myIndex + 1){
+            goDown = goToSibling
+          }
+          if(index == siblings.length - 1){
+            goBottom = goToSibling
+          }
+          element
+            .addClass('collapse')
+            .on('click', goToSibling)
+        }
+        $('#siblings').append(element)
+      }
+    }
+    const mySlug = siblings[myIndex]
+    if(mySlug){
+      const me = Text[mySlug]
+      if(me){
+        const children = me.children
+        if(children){
+          for(const [childIndex, childSlug] of children.entries()){
+            const child = Text[childSlug]
+            if(child){
+              const searchParams = new URLSearchParams()
+              searchParams.append('parent', mySlug)
+              searchParams.append('index', childIndex.toString())
+              for(const [key, value] of currentParams){
+                searchParams.append(key, value)
+              }
+              const element = $('<div>')
+                .addClass('item collapse')
+                .append(
+                  $('<div>')
+                  .addClass('content')
+                  .html(child.text)
+                )
+              function goToChild() {
+                $('#parent').width('0vw')
+                $('#siblings').width('12vw')
+                $('#children').width('75vw')
+                fitHeight(element)
+                $('body').addClass('fade')
                 setTimeout(() => location.search = searchParams.toString(), transitionDuration)
-              })
-          ).on('mouseleave', event => {
-            $(event.currentTarget).children().each((i, child) => {
-              $(child).height('')
-            })
-          })
+              }
+              if(childIndex == 0){
+                goToFirstChild = goToChild
+              }
+              $('#children').append(element.on('click', goToChild))
+            }
+          }
         }
       }
     }
   }
 }
 
-if(parentSlug){
-  const parent = text[parentSlug]
-  if(parent){
-    $('#parent')
-    .append($('<div>').addClass('content').html(parent.text))
-    .on('click', event => {
-      const searchParams = new URLSearchParams()
-      searchParams.append('page', parentSlug)
-      for(const [key, value] of paramsButCurrentOrParent){
-        searchParams.append(key, value)
-      }
-      $('#grandparent').css('width', '15%')
-      $('#parent').css('width', '70%')
-      $('#siblings').css('width', '15%')
-      $('#children').css('width', '0%')
-      setTimeout(() => location.search = searchParams.toString(), transitionDuration)
-    })
-  }
-  if(currentSlug){
-    const siblings = parent.children ?? []
-    const index = siblings.indexOf(currentSlug)
-    if(index > 0){
-      const prevSlug = siblings[index - 1];
-      const prev = text[prevSlug]
-      if(prev){
-        $('#prev')
-        .append($('<div>').addClass('content').html(prev.text))
-        .on('click', event => {
-          const searchParams = new URLSearchParams()
-          searchParams.append('page', prevSlug)
-          for(const [key, value] of paramsButCurrent){
-            searchParams.append(key, value)
-          }
-          fitHeight($('#prev'))
-          $('#current').height('36pt')
-          $('#next').height('0')
-          setTimeout(() => location.search = searchParams.toString(), transitionDuration)
-        })
-      }
-    }
-    if(index < siblings.length - 1){
-      const nextSlug = siblings[index + 1];
-      const next = text[nextSlug]
-      if(next){
-        $('#next')
-        .append($('<div>').addClass('content').html(next.text))
-        .on('click', event => {
-          const searchParams = new URLSearchParams()
-          searchParams.append('page', nextSlug)
-          for(const [key, value] of paramsButCurrent){
-            searchParams.append(key, value)
-          }
-          fitHeight($(event.currentTarget))
-          $('#prev').height('0')
-          $('#current').height('36pt')
-          setTimeout(() => location.search = searchParams.toString(), transitionDuration)
-        })
-      }
-    }
-  }
-}
+$('body').removeClass('fade')
 
-
-$('#grandparent').css('width', '0%')
-$('#parent').css('width', '15%')
-$('#prev').height('36pt')
-$('#next').height('36pt')
-$('#siblings')
-  .css('padding', '10pt')
-  .css('width', '70%')
-fitHeight($('#current'))
-$('#children').css('width', '15%')
+document.addEventListener("keydown", event => {
+  console.log(event.key)
+  switch(event.key){
+    case 'ArrowLeft':
+    case 'h':
+    case 'a':
+      goToParent()
+      break
+    case 'ArrowUp':
+    case 'k':
+    case 'w':
+      goUp()
+      break
+    case 'ArrowDown':
+    case 'j':
+    case 's':
+      goDown()
+      break
+    case 'ArrowRight':
+    case 'l':
+    case 'd':
+      goToFirstChild()
+      break
+    case 'PageUp':
+      goTop()
+      break
+    case 'PageDown':
+      goBottom()
+  }
+})
