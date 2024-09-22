@@ -2,7 +2,7 @@
   "name": "structnote",
   "version": "0.2.0",
   "scripts": {
-    "build": "./node_modules/.bin/esbuild --bundle --minify --outfile=build/main.js main.ts",
+    "build": "./node_modules/.bin/esbuild --bundle --minify --outfile=public/main.js main.ts",
     "serve": "http-server"
   },
   "author": "fiveseven-lambda",
