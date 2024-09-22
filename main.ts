@@ -73,7 +73,9 @@ if(parent){
             .html(sibling.text)
           )
         if(index == myIndex){
-          element.attr('id', 'me')
+          element
+            .attr('id', 'me')
+            .on('click', () => fitHeight($('#me')))
           const observer = new MutationObserver(
             () => {
               if($('#me').length){
