@@ -1,0 +1,24 @@
+main {
+  background-color: lightgray;
+  display: flex;
+}
+
+div {
+  transition-property: height, width;
+  transition-duration: .3s;
+  overflow: hidden;
+}
+
+#current {
+  margin: 10pt 0;
+}
+div.content {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+div.child {
+  height: 36pt;
+  overflow: hidden;
+  margin: 10pt;
+}
