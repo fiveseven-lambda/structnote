@@ -11,7 +11,8 @@ body.fade {
 }
 
 div {
-  transition: all .2s;
+  transition-property: height, width;
+  transition-duration: .2s;
   overflow: hidden;
 }
 #grandparent {
