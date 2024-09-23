@@ -49,6 +49,7 @@ let goBottom: () => void;
 let goToFirstChild: () => void;
 
 const parent = Text[parentSlug]
+let fitHeightMe: number;
 if(parent){
   $('#parent').append(
     $('<div>')
@@ -73,18 +74,8 @@ if(parent){
             .html(sibling.text)
           )
         if(index == myIndex){
-          element
-            .attr('id', 'me')
-            .on('click', () => fitHeight($('#me')))
-          const observer = new MutationObserver(
-            () => {
-              if($('#me').length){
-                fitHeight($('#me'))
-                observer.disconnect()
-              }
-            }
-          );
-          observer.observe(document, {childList: true, subtree: true})
+          element.attr('id', 'me')
+          fitHeightMe = setInterval(() => fitHeight(element), 100)
         }else{
           const searchParams = new URLSearchParams()
           if(parentSlug){
@@ -95,6 +86,7 @@ if(parent){
             searchParams.append(key, value)
           }
           function goToSibling() {
+            clearInterval(fitHeightMe)
             $('#me').height('36pt')
             fitHeight(element)
             $('body').addClass('fade')
@@ -164,7 +156,6 @@ if(parent){
 $('body').removeClass('fade')
 
 document.addEventListener("keydown", event => {
-  console.log(event.key)
   switch(event.key){
     case 'ArrowLeft':
     case 'h':
