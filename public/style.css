@@ -1,3 +1,11 @@
+header {
+  text-align: center;
+}
+footer {
+  font-size: small;
+  text-align: center;
+}
+
 main {
   background-color: lightgray;
   display: flex;
@@ -15,22 +23,7 @@ div {
   transition-duration: .2s;
   overflow: hidden;
 }
-#grandparent {
-  width: 0vw;
-}
-#parent {
-  width: 12vw;
-}
-#siblings {
-  width: 75vw;
-}
-#children {
-  width: 12vw;
-}
 
-div.collapse {
-  height: 36pt;
-}
 div.item {
   width: 75vw;
 }

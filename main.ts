@@ -75,7 +75,6 @@ if(parent){
           )
         if(index == myIndex){
           element.attr('id', 'me')
-          fitHeightMe = setInterval(() => fitHeight(element), 100)
         }else{
           const searchParams = new URLSearchParams()
           if(parentSlug){
@@ -153,7 +152,15 @@ if(parent){
   }
 }
 
-$('body').removeClass('fade')
+window.addEventListener('pageshow', event => {
+  $('#grandparent').width('0vw')
+  $('#parent').width('12vw')
+  $('#siblings').width('75vw')
+  $('#children').width('12vw')
+  $('body').removeClass('fade')
+  $('div.collapse').height('36pt')
+  fitHeightMe = setInterval(() => fitHeight($('#me')), 100)
+})
 
 document.addEventListener("keydown", event => {
   switch(event.key){
