@@ -31,6 +31,7 @@ export function Viewer({ text }: { text: Text }) {
       newSearchParams.append('index', newIndices[newAncestorsSlug.length].toString());
     }
     window.history.pushState(null, '', `?${newSearchParams.toString()}`)
+    window.scrollTo(0, 0)
   }
 
   let parentElement: ReactNode | undefined = undefined;
