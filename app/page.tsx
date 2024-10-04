@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Viewer, Text } from "../components/viewer";
 
 const text: Text = {
@@ -169,5 +170,7 @@ const text: Text = {
 };
 
 export default function Home() {
-  return <Viewer text={text}></Viewer>
+  return <Suspense>
+    <Viewer text={text}/>
+  </Suspense>
 }
