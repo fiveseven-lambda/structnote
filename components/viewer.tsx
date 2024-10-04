@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation';
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 export type Text = {
   [slug: string]: {
