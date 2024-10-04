@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation';
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 export type Text = {
   [slug: string]: {
@@ -43,6 +43,8 @@ export function Viewer({ text }: { text: Text }) {
   let moveDown = () => {}
   let moveTop = () => {}
   let moveBottom = () => {}
+
+  const refCurrentElement = useRef<HTMLDivElement>(null);
 
   if (parent) {
     if (parent.text) {
@@ -95,6 +97,7 @@ export function Viewer({ text }: { text: Text }) {
             return <div
               key={index}
               className='p-2 bg-sky-50'
+              ref={refCurrentElement}
             >
               <div className='p-2 bg-white'>
                 { sibling.text }
@@ -133,6 +136,8 @@ export function Viewer({ text }: { text: Text }) {
       })
     }
   }
+
+  refCurrentElement.current?.scrollIntoView()
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
