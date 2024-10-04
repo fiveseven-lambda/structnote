@@ -44,8 +44,6 @@ export function Viewer({ text }: { text: Text }) {
   let moveTop = () => {}
   let moveBottom = () => {}
 
-  const refCurrentElement = useRef<HTMLDivElement>(null);
-
   if (parent) {
     if (parent.text) {
       const move = () => jump(
@@ -97,7 +95,6 @@ export function Viewer({ text }: { text: Text }) {
             return <div
               key={index}
               className='p-2 bg-sky-50'
-              ref={refCurrentElement}
             >
               <div className='p-2 bg-white'>
                 { sibling.text }
@@ -107,7 +104,7 @@ export function Viewer({ text }: { text: Text }) {
             const move = () => jump(
               ancestorsSlug,
               [index].concat(indices.slice(1))
-            );
+            )
             if (index == 0) {
               moveTop = move
             }
@@ -125,7 +122,7 @@ export function Viewer({ text }: { text: Text }) {
               className='p-2'
             >
               <div
-                className='p-2 bg-zinc-50'
+                className='p-2 bg-zinc-50 h-10 overflow-hidden'
                 onClick={move}
               >
                 { sibling.text }
@@ -136,8 +133,6 @@ export function Viewer({ text }: { text: Text }) {
       })
     }
   }
-
-  refCurrentElement.current?.scrollIntoView()
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
