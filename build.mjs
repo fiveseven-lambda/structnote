@@ -92,7 +92,7 @@ const togaMarkdown = {
               type = '欧'
               continue
             }
-            const english = /^[\d\w,.]+/d.exec(input)
+            const english = /^[\d\w,.()]+/d.exec(input)
             if (english) {
               consume(english)
               if (type === '欧') {
