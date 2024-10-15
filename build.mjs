@@ -92,7 +92,7 @@ const togaMarkdown = {
               type = '欧'
               continue
             }
-            const english = /^[\d\w,.()]+/d.exec(input)
+            const english = /^[-\d\w,.()]+/d.exec(input)
             if (english) {
               consume(english)
               if (type === '欧') {
@@ -104,7 +104,7 @@ const togaMarkdown = {
               type = '欧'
               continue
             }
-            const japanese = /^[^${}#\d\w\n\p{Zs}]+/du.exec(input)
+            const japanese = /^[^-${}#\d\w()\n\p{Zs}]+/du.exec(input)
             if (japanese) {
               consume(japanese)
               if (type === '欧') {

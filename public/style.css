@@ -1,12 +1,22 @@
 main {
+  background-color: silver;
   display: flex;
 }
 
-div {
-  padding: 10px;
-  overflow: hidden;
+main > div {
+  margin: 0;
+  transition: width .5s;
 }
 
-p {
-  margin: 0;
+.cell {
+  transition: height .5s;
+  overflow: hidden;
+  display: grid;
+}
+
+.page {
+  margin: 6px;
+  height: fit-content;
+  min-height: 4em;
+  background-color: white;
 }
