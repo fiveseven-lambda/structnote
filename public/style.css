@@ -23,4 +23,5 @@ main > div {
   height: fit-content;
   min-height: 4em;
   background-color: white;
+  font-feature-settings: "palt";
 }
