@@ -1,3 +1,7 @@
+header, footer {
+  text-align: center;
+}
+
 main {
   background-color: silver;
   display: flex;
