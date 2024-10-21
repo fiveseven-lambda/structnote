@@ -15,6 +15,7 @@ for (const index of (searchParams.get('i') ?? '0').split('.').map(Number)) {
 }
 
 const columnPadding = 6;
+const collapseHeight = '6em';
 
 function createRow() {
   const row = document.createElement('div');
@@ -25,8 +26,7 @@ function createRow() {
 function createColumn(title) {
   const page = document.createElement('div');
   page.classList.add('page');
-  // page.innerHTML = '<h2>' + title + '</h2>' + Text[title].h;
-  page.innerHTML = Text[title].h;
+  page.innerHTML = '<h2>' + title + '</h2>' + Text[title].h;
 
   const cell = document.createElement('div');
   cell.classList.add('cell');
@@ -51,6 +51,7 @@ function setLeft(row) {
   for (let i = 0; i < Text[pages[pages.length - 3]].c.length; i++) {
     if (i === indices[pages.length - 3]) {
       observer.observe(row.children[i].children[0]);
+      row.children[i].classList.add('collapsed');
       row.children[i].onclick = moveLeft;
     } else {
       row.children[i].style.height = 0;
@@ -78,12 +79,15 @@ function setMid(row) {
   for (let i = 0; i < Text[pages[pages.length - 2]].c.length; i++) {
     if (i === indices[pages.length - 2]) {
       observer.observe(row.children[i].children[0]);
+      row.children[i].classList.remove('collapsed');
       row.children[i].onclick = null;
     } else if (i === indices[pages.length - 2] - 1) {
-      row.children[i].style.height = '4em';
+      row.children[i].style.height = collapseHeight;
+      row.children[i].classList.add('collapsed');
       row.children[i].onclick = moveUp;
     } else if (i === indices[pages.length - 2] + 1) {
-      row.children[i].style.height = '4em';
+      row.children[i].style.height = collapseHeight;
+      row.children[i].classList.add('collapsed');
       row.children[i].onclick = moveDown;
     } else {
       row.children[i].style.height = 0;
@@ -101,7 +105,8 @@ function fillRight(row) {
 function setRight(row) {
   row.style.width = '15%';
   for (let i = 0; i < Text[pages[pages.length - 1]].c.length; i++) {
-    row.children[i].style.height = '4em';
+    row.children[i].style.height = collapseHeight;
+    row.children[i].classList.add('collapsed');
     row.children[i].onclick = () => moveRight(i);
   }
 }
@@ -155,3 +160,28 @@ fillLeft(main.children[1]);
 fillMid(main.children[2]);
 fillRight(main.children[3]);
 main.children[4].style.width = 0;
+
+document.addEventListener("keydown", event => {
+  switch (event.key) {
+    case 'ArrowLeft':
+    case 'h':
+    case 'a':
+      moveLeft();
+      break;
+    case 'ArrowUp':
+    case 'k':
+    case 'w':
+      moveUp();
+      break;
+    case 'ArrowDown':
+    case 'j':
+    case 's':
+      moveDown();
+      break;
+    case 'ArrowRight':
+    case 'l':
+    case 'd':
+      moveRight(0);
+      break;
+  }
+})

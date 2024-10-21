@@ -22,7 +22,23 @@ main > div {
 
 .page {
   height: fit-content;
-  min-height: 4em;
+  min-height: 6em;
   background-color: white;
   font-feature-settings: "palt";
 }
+
+h2 {
+  margin: 0;
+  transition: font-size .2s;
+}
+p {
+  transition: margin .2s;
+}
+
+.collapsed h2 {
+  font-size: 1rem;
+}
+.collapsed p {
+  margin: 0;
+}
+
