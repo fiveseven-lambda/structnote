@@ -14,6 +14,8 @@ for (const index of (searchParams.get('i') ?? '0').split('.').map(Number)) {
   }
 }
 
+const columnPadding = 6;
+
 function createRow() {
   const row = document.createElement('div');
   row.style.width = 0;
@@ -30,10 +32,7 @@ function createColumn(title) {
   cell.classList.add('cell');
   cell.append(page);
 
-  const column = document.createElement('div');
-  column.classList.add('column');
-  column.append(cell);
-  return column;
+  return cell;
 }
 
 function fillLeft(row) {
@@ -51,10 +50,10 @@ function setLeft(row) {
   row.style.width = '15%';
   for (let i = 0; i < Text[pages[pages.length - 3]].c.length; i++) {
     if (i === indices[pages.length - 3]) {
-      observer.observe(row.children[i].children[0].children[0]);
+      observer.observe(row.children[i].children[0]);
       row.children[i].onclick = moveLeft;
     } else {
-      row.children[i].children[0].style.height = 0;
+      row.children[i].style.height = 0;
       row.children[i].onclick = null;
     }
   }
@@ -69,7 +68,7 @@ function fillMid(row) {
 
 const observer = new ResizeObserver((entries) => {
   for (const entry of entries) {
-    entry.target.parentElement.style.height = entry.contentBoxSize[0].blockSize + 12 + 'px';
+    entry.target.parentElement.style.height = entry.contentBoxSize[0].blockSize + 2 * columnPadding + 'px';
   }
 });
 
@@ -78,16 +77,16 @@ function setMid(row) {
   observer.disconnect();
   for (let i = 0; i < Text[pages[pages.length - 2]].c.length; i++) {
     if (i === indices[pages.length - 2]) {
-      observer.observe(row.children[i].children[0].children[0]);
+      observer.observe(row.children[i].children[0]);
       row.children[i].onclick = null;
     } else if (i === indices[pages.length - 2] - 1) {
-      row.children[i].children[0].style.height = '4em';
+      row.children[i].style.height = '4em';
       row.children[i].onclick = moveUp;
     } else if (i === indices[pages.length - 2] + 1) {
-      row.children[i].children[0].style.height = '4em';
+      row.children[i].style.height = '4em';
       row.children[i].onclick = moveDown;
     } else {
-      row.children[i].children[0].style.height = 0;
+      row.children[i].style.height = 0;
     }
   }
 }
@@ -102,7 +101,7 @@ function fillRight(row) {
 function setRight(row) {
   row.style.width = '15%';
   for (let i = 0; i < Text[pages[pages.length - 1]].c.length; i++) {
-    row.children[i].children[0].style.height = '4em';
+    row.children[i].style.height = '4em';
     row.children[i].onclick = () => moveRight(i);
   }
 }
@@ -110,6 +109,7 @@ function setRight(row) {
 function moveLeft() {
   pages.pop();
   indices.pop();
+  window.history.pushState(null, '', '?i=' + indices.join('.'));
   fillLeft(main.children[0]);
   setMid(main.children[1]);
   setRight(main.children[2]);
@@ -122,6 +122,7 @@ function moveLeft() {
 function moveUp() {
   const index = --indices[pages.length - 2];
   pages[pages.length - 1] = Text[pages[pages.length - 2]].c[index];
+  window.history.pushState(null, '', '?i=' + indices.join('.'));
   setMid(main.children[2]);
   main.children[3].innerHTML = '';
   fillRight(main.children[3]);
@@ -130,6 +131,7 @@ function moveUp() {
 function moveDown() {
   const index = ++indices[pages.length - 2];
   pages[pages.length - 1] = Text[pages[pages.length - 2]].c[index];
+  window.history.pushState(null, '', '?i=' + indices.join('.'));
   setMid(main.children[2]);
   main.children[3].innerHTML = '';
   fillRight(main.children[3]);
@@ -138,6 +140,7 @@ function moveDown() {
 function moveRight(i) {
   pages.push(Text[pages[pages.length - 1]].c[i]);
   indices.push(i);
+  window.history.pushState(null, '', '?i=' + indices.join('.'));
   fillRight(main.children[4]);
   setMid(main.children[3]);
   setLeft(main.children[2]);

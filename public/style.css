@@ -13,13 +13,14 @@ main > div {
 }
 
 .cell {
-  transition: height .5s;
+  box-sizing: border-box;
+  border: 6px solid silver;
   overflow: hidden;
   display: grid;
+  transition: height .5s;
 }
 
 .page {
-  margin: 6px;
   height: fit-content;
   min-height: 4em;
   background-color: white;
